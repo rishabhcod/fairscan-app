@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { AlertTriangle, CheckCircle, XCircle, Upload, ChevronRight, Shield, BarChart3, Zap, Eye, RefreshCw, Copy, ChevronDown, ChevronUp, Info } from "lucide-react";
 
-const GEMINI_MODEL = "gemini-2.0-flash";
+const GEMINI_MODEL = "gemini-2.5-flash";
 
 const SAMPLE_CSV = `age,gender,race,education,job_title,loan_approved,salary
 34,Male,White,Bachelor,Engineer,Yes,95000
