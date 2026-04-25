@@ -345,17 +345,19 @@ const styles = `
   .mini-table tr:hover td { background: var(--surface2); }
 `;
 
-// Parse AI response into structured data
 function parseAIResponse(text) {
   const json = { overallScore: null, severity: null, metrics: [], flags: [], recommendations: [], summary: "" };
   try {
     // Try JSON block first
     const jsonMatch = text.match(/```json\s*([\s\S]*?)```/);
     if (jsonMatch) return { ...json, ...JSON.parse(jsonMatch[1]) };
-    // Try raw JSON
-    const rawJson = text.match(/\{[\s\S]*\}/);
+    // Strip any leftover backticks and try again
+    const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const rawJson = cleaned.match(/\{[\s\S]*\}/);
     if (rawJson) return { ...json, ...JSON.parse(rawJson[0]) };
-  } catch {}
+  } catch (e) {
+    console.error("Parse failed:", e, text);
+  }
   return json;
 }
 
