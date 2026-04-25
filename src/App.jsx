@@ -348,15 +348,17 @@ const styles = `
 function parseAIResponse(text) {
   const json = { overallScore: null, severity: null, metrics: [], flags: [], recommendations: [], summary: "" };
   try {
-    // Try JSON block first
-    const jsonMatch = text.match(/```json\s*([\s\S]*?)```/);
-    if (jsonMatch) return { ...json, ...JSON.parse(jsonMatch[1]) };
-    // Strip any leftover backticks and try again
-    const cleaned = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    const rawJson = cleaned.match(/\{[\s\S]*\}/);
-    if (rawJson) return { ...json, ...JSON.parse(rawJson[0]) };
+    // Remove ALL backtick code fences regardless of format
+    let cleaned = text
+      .replace(/^```json\s*/m, "")   // remove opening ```json
+      .replace(/^```\s*/m, "")       // remove opening ```
+      .replace(/```\s*$/m, "")       // remove closing ```
+      .trim();
+
+    return { ...json, ...JSON.parse(cleaned) };
   } catch (e) {
-    console.error("Parse failed:", e, text);
+    console.error("Parse failed:", e.message);
+    console.log("Raw text was:", text);
   }
   return json;
 }
